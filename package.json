@@ -18,5 +18,9 @@
   "workspaces": [
     "client",
     "server"
-  ]
+  ],
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "openai": "^4.73.0"
+  }
 }

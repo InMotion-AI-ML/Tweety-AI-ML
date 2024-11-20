@@ -12,6 +12,12 @@ router.get('/unique-values', exerciseController.getUniqueMuscles, exerciseContro
   });
 });
 
-router.get('/aisearch', aiExerciseController./*function for SQL generation*/ aiExerciseController./*function for generating custon user response*/); // route for AI generated SQL query and response
+router.get(
+  '/aisearch',
+  aiExerciseController.parseNaturalLanguageQuery,
+  aiExerciseController.sqlQueryCreator,
+  aiExerciseController.queryDatabase,
+  aiExerciseController.openAiResponse, /*.....*/
+); // route for AI generated SQL query and response
 
 export default router;
