@@ -1,5 +1,6 @@
 import express from 'express'; // imports express
 import exerciseController from '../controllers/exerciseController.js'; // imports exerciseController module
+import exerciseController from '../controllers/aiExerciseController.js'; // imports aiExerciseController module
 
 const router = express.Router(); // imports Router() from Express
 
@@ -11,5 +12,7 @@ router.get('/unique-values', exerciseController.getUniqueMuscles, exerciseContro
     categories: req.uniqueCategories,
   });
 });
+
+router.get('/aisearch', aiExerciseController/*function name to generate a SQL query*/, aiExerciseController/*to create a response*/); // route USING AI to search exercises based on AI ASSISTED QUERY
 
 export default router;
