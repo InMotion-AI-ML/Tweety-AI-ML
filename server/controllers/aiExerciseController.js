@@ -11,7 +11,7 @@ const aiExerciseController = {};
 // TAKES USER INPUT AND MAKES SURE THAT IT'S A STRING/ERROR HANDLING
 aiExerciseController.parseNaturalLanguageQuery = async (req, res, next) => {
   // check to see if the user's query exists
-  if (!req.body./* natural language query */) {
+  if (!req.body.searchAI) {
       const error = {
           log: 'Natural language query not provided',
           status: 400,
@@ -20,9 +20,9 @@ aiExerciseController.parseNaturalLanguageQuery = async (req, res, next) => {
       return next(error);
   }
   
-  const { /* natural language query */ } = req.body;
+  const { searchAI } = req.body;
     
-  if (typeof /* natural language query */ !== 'string') {
+  if (typeof searchAI !== 'string') {
       const error = {
           log: 'Natural language query is not a string',
           status: 400,
@@ -32,7 +32,7 @@ aiExerciseController.parseNaturalLanguageQuery = async (req, res, next) => {
   }
   
   // STORING NATURAL LANGUAGE QUERY (AS USERQUERY) ON RES LOCALS
-  res.locals.userQuery = /* natural language query */;
+  res.locals.userQuery = searchAI;
   return next();
 };
 
@@ -135,8 +135,8 @@ aiExerciseController.queryDatabase = async (req, res, next) => {
 aiExerciseController.openAiResponse = async (req, res, next) => {
   // deconstruct res.locals for query result
   const { dbResponse } = res.locals;
-  // deconstruct user input from body
-  const userInput = req.body.HOLD/* natural language query REPLACE WITH VARIABLE NAME*/
+  // take user input
+  const userInput = res.locals.userQuery;
 
   if (!dbResponse) {
     const error = {
@@ -193,3 +193,4 @@ aiExerciseController.openAiResponse = async (req, res, next) => {
 }
 
 export default aiExerciseController;
+
