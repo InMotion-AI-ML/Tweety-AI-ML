@@ -4,11 +4,20 @@ import dotenv from 'dotenv'; // for loading environment variables
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import exerciseRoutes from './routes/exerciseRoutes.js'; // import exercise routes
+const passport = require('passport');
+const session = require('express-session');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 dotenv.config(); // ensure the environment variables are loaded
 
 const app = express(); // app, new instance of Express()
 const PORT = process.env.PORT || 8080; // use port from .env or default to 8080
+
+
+// Initialize Passport and restore authentication state from session
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // get __dirname is an ES Module environment
 const __filename = fileURLToPath(import.meta.url); // converts the current module's URL to a file path
