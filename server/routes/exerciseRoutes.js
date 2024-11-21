@@ -1,6 +1,6 @@
-import express from 'express'; // imports express
-// import aiExerciseController from '../controllers/aiExerciseController.js';
-import exerciseController from '../controllers/exerciseController.js'; // imports exerciseController module
+import express from 'express';
+import exerciseController from '../controllers/exerciseController.js';
+import aiExerciseController from '../controllers/aiExerciseController.js';
 
 const router = express.Router(); // imports Router() from Express
 
@@ -20,12 +20,17 @@ router.get(
   }
 );
 
-// TEST: SIMPLE POST RESPONSE
-router.post('/aisearch', (req, res) => {
-  console.log('Backend - req.body: ', req.body);
-  res.locals.test = req.body.searchAI;
-  res.status(200).json(res.locals.test);
-});
-// router.get('/aisearch', aiExerciseController./*function for SQL generation*/ aiExerciseController./*function for generating custon user response*/); // route for AI generated SQL query and response
+// HANDLES THE AI SEARCHING FUNCTIONALITY
+router.post(
+  '/aisearch',
+  aiExerciseController.parseNaturalLanguageQuery,
+  aiExerciseController.sqlQueryCreator,
+  aiExerciseController.queryDatabase,
+  aiExerciseController.openAiResponse,
+  (req, res) => {
+    // sends AI-generated response to frontend
+    res.status(200).json({ aiResponse: res.locals.aiResponse });
+  }
+); 
 
 export default router;
