@@ -3,8 +3,15 @@ import Menu from './Menu';
 
 function Header({ isOpen, setIsOpen, handleMenuBtn }) {
   return (
-    <div id='browserLogo'>
-      <img src='/Shirt Logo Draft.png' alt='Logo' />
+    <div className='flex justify-center mb-6'>
+      {/* LOGO SECTION */}
+      {/* Flex container centers the logo horizontally with margin below */}
+      {/* Logo with fixed width/height and object-fit for proper scaling*/}
+      <img
+        src='/Shirt Logo Draft.png'
+        alt='Logo'
+        className='w-36 h-36 object-contain'
+      />
       <Menu
         handleMenuBtn={handleMenuBtn}
         setIsOpen={setIsOpen}

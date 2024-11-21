@@ -13,7 +13,10 @@ function App() {
   };
 
   return (
-    <div id='appContainer'>
+    <div
+      id='appContainer'
+      className='min-h-screen bg-gradient-to-b from-orange-500 via-yellow-400 to-black text-white'
+    >
       {/* DISPLAYS THE LOGO AND PROJECT / APPLICATION NAME */}
       <Header
         handleMenuBtn={handleMenuBtn}

@@ -1,22 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-function SearchInput({
-  setResponseResults,
-  // searchInputRef,
-  // muscleOptions,
-  // categoryOptions,
-  // muscle,
-  // setMuscle,
-  // category,
-  // setCategory,
-  // exerciseSearch,
-}) {
+function SearchInput({ setResponseResults }) {
   const [muscle, setMuscle] = useState('');
   const [category, setCategory] = useState('');
   const [muscleOptions, setMuscleOptions] = useState([]); // state for muscle options
   const [categoryOptions, setCategoryOptions] = useState([]); // state for category options
-  // const [searchInput, setSearchInput] = useState('');
-  // const [queryParams, setQueryParams] = useState({});
   const searchInputRef = useRef(null); // searchInputRef, a mutable obj, assigned to the reference obejct of the input DOM element/text input field once rendered
   // no need to re-render the text box, so no need to set state, only want the text
 
@@ -46,10 +34,6 @@ function SearchInput({
     };
     fetchOptions();
   }, []); // empty dependency array means this effect runs once when the component mounts
-
-  // const exerciseSearch = async () => {
-  //   setSearchInput(searchInputRef.current.value.trim()); // get the search term
-  //   setQueryParams({});
 
   const exerciseSearch = async () => {
     const searchInput = searchInputRef.current.value.trim(); // get the search term
@@ -81,46 +65,94 @@ function SearchInput({
   };
 
   return (
-    <div className='searchContainer'>
-      <div className='inputContainer'>
-        <h1>Exercise Search</h1>
-        <input
-          type='text'
-          id='searchId'
-          placeholder='Search exercises by name'
-          ref={searchInputRef} // once this element is rendered, React assigns the input field to searchInputRef.current, allows direct interaction after
-          onKeyDown={(e) => {
-            // search triggers on pressing enter or with button click below
-            if (e.key === 'Enter') exerciseSearch();
-          }}
-        />
-        <select
-          value={muscle}
-          onChange={(e) => setMuscle(e.target.value)} // update muscle state
-          placeholder='Select Muscle'
-        >
-          <option value=''>Select Muscle</option>
-          {muscleOptions.map((m, index) => (
-            <option key={index} value={m}>
-              {m}
-            </option>
-          ))}
-        </select>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)} // update category state
-          placeholder='Select Category'
-        >
-          <option value=''>Select Category</option>
-          {categoryOptions.map((c, index) => (
-            <option key={index} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
-        <button id='searchButton' onClick={exerciseSearch}>
-          Search
-        </button>
+    <div className='bg-black bg-opacity-80 p-6 rounded-lg shadow-lg max-w-4xl w-full mx-auto'>
+      {/* SEARCH INPUT SECTION */}
+      {/* A black container with opacity, padding, rounded corners, shadow, and centered horizontally */}
+
+      {/* Flex container to align input, selectors, and button horizontally with spacing */}
+      <div className='flex items-center space-x-4'>
+        {/* SEARCH INPUT */}
+        {/* Flex column for vertical alignment with width for even spacing */}
+        <div className='flex flex-col w-1/3'>
+          {/* Label for input with bottom margin */}
+          <label htmlFor='searchId' className='block text-sm font-medium mb-2'>
+            Search
+          </label>
+          {/* Input with full width, padding, border, focus effects, and black text */}
+          <input
+            type='text'
+            id='searchId'
+            placeholder='Search exercises'
+            ref={searchInputRef}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') exerciseSearch();
+            }}
+            className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
+          />
+        </div>
+
+        {/* MUSCLE SELECTOR */}
+        {/* Flex column for vertical alignment with reduced width */}
+        <div className='flex flex-col w-1/4'>
+          {/* Label for muscle selector */}
+          <label htmlFor='muscle' className='block text-sm font-medium mb-2'>
+            Muscle
+          </label>
+          {/* Dropdown with full width, padding, border, and focus effects */}
+          <select
+            id='muscle'
+            value={muscle}
+            onChange={(e) => setMuscle(e.target.value)}
+            className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
+          >
+            <option value=''>Select Muscle</option>
+            {muscleOptions.map((m, index) => (
+              <option key={index} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* CATEGORY SELECTOR */}
+        {/* Flex column with width matching the muscle selector */}
+        <div className='flex flex-col w-1/4'>
+          {/* Label for category selector */}
+          <label htmlFor='category' className='block text-sm font-medium mb-2'>
+            Category
+          </label>
+          {/* Dropdown with similar styling as muscle selector */}
+          <select
+            id='category'
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
+          >
+            <option value=''>Select Category</option>
+            {categoryOptions.map((c, index) => (
+              <option key={index} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* SEARCH BUTTON */}
+        {/* Flex column with invisible label for alignment */}
+        <div className='flex flex-col w-1/4'>
+          {/* Invisible label to maintain spacing alignment */}
+          <label className='block text-sm font-medium mb-2 invisible'>
+            Button
+          </label>
+          {/* Button with full width, orange background, hover effects, and padding */}
+          <button
+            id='searchButton'
+            onClick={exerciseSearch}
+            className='w-full bg-orange-500 text-black py-2 rounded-lg font-bold hover:bg-orange-600 hover:text-white transition-colors'
+          >
+            Search
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -4,18 +4,8 @@ import SearchAI from '../components/SearchAI';
 
 const SearchContainer = ({ setResponseResults }) => {
   return (
-    <div className='searchContainer'>
-      <SearchInput
-        setResponseResults={setResponseResults}
-        // searchInputRef={searchInputRef}
-        // muscleOptions={muscleOptions}
-        // categoryOptions={categoryOptions}
-        // muscle={muscle}
-        // setMuscle={setMuscle}
-        // category={category}
-        // setCategory={setCategory}
-        // exerciseSearch={exerciseSearch}
-      />
+    <div id='searchContainer' className=' flex flex-col items-center'>
+      <SearchInput setResponseResults={setResponseResults} />
       <SearchAI setResponseResults={setResponseResults} />
     </div>
   );
