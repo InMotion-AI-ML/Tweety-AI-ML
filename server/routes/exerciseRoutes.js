@@ -1,5 +1,6 @@
 import express from 'express'; // imports express
 import exerciseController from '../controllers/exerciseController.js'; // imports exerciseController module
+import aiExerciseController from '../controllers/aiExerciseController.js';
 
 const router = express.Router(); // imports Router() from Express
 
