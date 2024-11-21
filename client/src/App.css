@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -10,7 +11,7 @@ body, html {
   flex-direction: column; /* Stack all elements vertically */
 }
 
-#appContainer {
+.mainContainer {
   display: flex; /* Flexbox for layout */
   flex-direction: column; /* Stack items vertically */
   align-items: flex-start; /* Align all items to the left */
