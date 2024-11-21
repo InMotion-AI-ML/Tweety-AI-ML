@@ -75,9 +75,13 @@ function App() {
 	};
 
   return (
+    // Main container with gradient background and white text
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-orange-500 via-yellow-400 to-black text-white">
-      {/* DISPLAYS THE LOGO AND PROJECT / APPLICATION NAME */}
+      
+      {/* LOGO SECTION */}
+      {/* Flex container centers the logo horizontally with margin below */}
       <div className="flex justify-center mb-6">
+        {/* Logo with fixed width/height and object-fit for proper scaling */}
         <img
           src="/Shirt Logo Draft.png"
           alt="Logo"
@@ -85,14 +89,20 @@ function App() {
         />
       </div>
   
-      {/* DISPLAYS THE SEARCH INPUT METHODS */}
+      {/* SEARCH INPUT SECTION */}
+      {/* A black container with opacity, padding, rounded corners, shadow, and centered horizontally */}
       <div className="bg-black bg-opacity-80 p-6 rounded-lg shadow-lg max-w-4xl w-full mx-auto">
+        {/* Flex container to align input, selectors, and button horizontally with spacing */}
         <div className="flex items-center space-x-4">
-          {/* Search input */}
+  
+          {/* SEARCH INPUT */}
+          {/* Flex column for vertical alignment with width for even spacing */}
           <div className="flex flex-col w-1/3">
+            {/* Label for input with bottom margin */}
             <label htmlFor="searchId" className="block text-sm font-medium mb-2">
               Search
             </label>
+            {/* Input with full width, padding, border, focus effects, and black text */}
             <input
               type="text"
               id="searchId"
@@ -105,11 +115,14 @@ function App() {
             />
           </div>
   
-          {/* Muscle selector */}
+          {/* MUSCLE SELECTOR */}
+          {/* Flex column for vertical alignment with reduced width */}
           <div className="flex flex-col w-1/4">
+            {/* Label for muscle selector */}
             <label htmlFor="muscle" className="block text-sm font-medium mb-2">
               Muscle
             </label>
+            {/* Dropdown with full width, padding, border, and focus effects */}
             <select
               id="muscle"
               value={muscle}
@@ -125,11 +138,14 @@ function App() {
             </select>
           </div>
   
-          {/* Category selector */}
+          {/* CATEGORY SELECTOR */}
+          {/* Flex column with width matching the muscle selector */}
           <div className="flex flex-col w-1/4">
+            {/* Label for category selector */}
             <label htmlFor="category" className="block text-sm font-medium mb-2">
               Category
             </label>
+            {/* Dropdown with similar styling as muscle selector */}
             <select
               id="category"
               value={category}
@@ -145,11 +161,14 @@ function App() {
             </select>
           </div>
   
-          {/* Search button */}
+          {/* SEARCH BUTTON */}
+          {/* Flex column with invisible label for alignment */}
           <div className="flex flex-col w-1/4">
+            {/* Invisible label to maintain spacing alignment */}
             <label className="block text-sm font-medium mb-2 invisible">
               Button
             </label>
+            {/* Button with full width, orange background, hover effects, and padding */}
             <button
               id="searchButton"
               onClick={exerciseSearch}
@@ -161,22 +180,28 @@ function App() {
         </div>
       </div>
   
-      {/* Main container for exercises */}
+      {/* EXERCISES SECTION */}
+      {/* Main flex container for exercises and details with space between columns */}
       <div
         id="exerciseContainer"
         className="flex flex-row mt-8 max-w-7xl w-full mx-auto space-x-6"
       >
-        {/* Left column: Exercise list with scroll bar */}
+        
+        {/* LEFT COLUMN: Exercise list */}
+        {/* Flex column for vertical stacking with scroll bar, max height, and background styling */}
         <div className="exerciseList flex flex-col w-1/3 space-y-4 overflow-y-scroll max-h-[400px] bg-black bg-opacity-80 p-4 rounded-lg shadow-md">
           {responseResults.length > 0 ? (
             <ul className="space-y-4">
               {responseResults.map((exercise) => (
+                // Each list item with hover effects and border styling
                 <li
                   key={exercise.id}
                   className="bg-black bg-opacity-80 text-white border border-orange-500 p-4 rounded-lg shadow-md hover:shadow-lg cursor-pointer"
                   onMouseEnter={() => setExpandedExerciseId(exercise.id)}
                 >
+                  {/* Exercise name */}
                   <h3 className="text-lg font-bold">{exercise.name}</h3>
+                  {/* Exercise image or placeholder */}
                   {Array.isArray(exercise.images) ? (
                     <img
                       src={exercise.images[0]}
@@ -194,15 +219,18 @@ function App() {
           )}
         </div>
   
-        {/* Right column: Exercise details */}
+        {/* RIGHT COLUMN: Exercise details */}
+        {/* Flex container with grow to fill remaining space */}
         <div className="exerciseDetails flex-grow bg-black bg-opacity-80 p-6 rounded-lg shadow-md">
           {expandedExerciseId ? (
             responseResults.map((exercise) =>
               exercise.id === expandedExerciseId ? (
                 <div key={exercise.id} className="text-left">
+                  {/* Exercise name */}
                   <h2 className="text-2xl font-bold text-orange-500 mb-4">
                     {exercise.name}
                   </h2>
+                  {/* Images displayed in grid */}
                   {Array.isArray(exercise.images) ? (
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       {exercise.images.map((imageUrl, index) => (
@@ -217,6 +245,7 @@ function App() {
                   ) : (
                     <p className="text-gray-400">No images available</p>
                   )}
+                  {/* Exercise details */}
                   <p>
                     <strong>Force:</strong> {exercise.force}
                   </p>
