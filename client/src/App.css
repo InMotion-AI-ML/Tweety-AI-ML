@@ -11,7 +11,7 @@ html {
   flex-direction: column; /* Stack all elements vertically */
 }
 
-#appContainer {
+.mainContainer {
   display: flex; /* Flexbox for layout */
   flex-direction: column; /* Stack items vertically */
   align-items: flex-start; /* Align all items to the left */

@@ -20,6 +20,12 @@ router.get(
   }
 );
 
+// TEST: SIMPLE POST RESPONSE
+router.post('/aisearch', (req, res) => {
+  console.log('Backend - req.body: ', req.body);
+  res.locals.test = req.body.searchAI;
+  res.status(200).json(res.locals.test);
+});
 // router.get('/aisearch', aiExerciseController./*function for SQL generation*/ aiExerciseController./*function for generating custon user response*/); // route for AI generated SQL query and response
 
 export default router;
