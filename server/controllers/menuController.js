@@ -10,7 +10,7 @@ menuController.getUserProfile = async (req, res, next) => {
             return res.status(401).json({ error: 'User not authenticated' });
         }
 
-        const query = /* insert db query to access user*/;
+        const query = /* insert db query to access user*/'SELECT';
         const values = [userId];
 
         const result = await db.query(query, values);
