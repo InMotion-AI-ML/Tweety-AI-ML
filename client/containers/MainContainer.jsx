@@ -8,7 +8,7 @@ import ResultsDisplay from './ResultsDisplay.jsx';
 const MainContainer = () => {
   return (
     <div className='mainContainer'>
-      <Logo/>
+      <Logo />
       <h1 id='searchHeader'>Exercise Search</h1>
       <SearchContainer />
       <ResultsDisplay />

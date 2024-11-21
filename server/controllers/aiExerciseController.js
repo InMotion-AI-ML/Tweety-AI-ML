@@ -1,3 +1,5 @@
 import db from '../models/exerciseModels.js';
 
-export default 
+const aiExerciseController = {};
+
+export default aiExerciseController;
