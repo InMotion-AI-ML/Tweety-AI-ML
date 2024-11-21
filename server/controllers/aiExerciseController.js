@@ -2,7 +2,7 @@ import db from '../models/exerciseModels.js';
 import OpenAI from 'openai';
 import 'dotenv/config';
 
-const openAi = new OpenAI({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -47,16 +47,20 @@ aiExerciseController.sqlQueryCreator = async (req, res, next) => {
       };
       return next(error);
   }
+
+  const queryParams = [];
+
   try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
         {
           role: 'system',
-          content: `Given ${userQuery}, create a SQL query that searches the exercises table by the attributes of id (partial matching able), primaryMuscles, secondaryMuscles, and category.
+          content: `Given ${userQuery}, Generate a SQL query that searches the "exercises" table by the attributes of id (partial matching able), primaryMuscles, secondaryMuscles, and category.
           id is the same as exercise name.
           Muscle groups include: abdominals, abductors, adductors, biceps, calves, chest, forearms, glutes, hamstrings, lats, lower back, middle back, neck, quadriceps, shoulders, traps, triceps.
           Categories include: cardio, olympic weight lifting, plyometrics, powerlifting, strength, stretching, strongman.
+          The query should use parameterized placeholders ($1, $2, $3) for input values and return all columns from the "exercises" table. Do not include any explanations or formatting. Return only the query as plain text.
           An example SQL query is: 'SELECT exercises.* FROM exercises WHERE 1=1 AND exercises.id ILIKE $${queryParams.length + 1} AND (exercises."primaryMuscles" @> $${queryParams.length + 1} OR exercises."secondaryMuscles" @> $${queryParams.length + 1})`,
         },
       ],
@@ -77,11 +81,12 @@ aiExerciseController.sqlQueryCreator = async (req, res, next) => {
     }
     return next();
   } catch (error) {
-    const apiError = {
-      log: `sqlQueryCreator: Error: OpenAI error`,
+    console.error ('Full OpenAI Error', error);
+    return next({
+      log: `sqlQueryCreator: Error: OpenAI API call failed`, 
       status: 500,
-      message: { err: 'An error occurred while '}
-    }
+      message: { err: error.message || 'An unknown error occurred while querying OpenAI' },
+    });
   }
 }
 
@@ -89,7 +94,7 @@ aiExerciseController.sqlQueryCreator = async (req, res, next) => {
 aiExerciseController.queryDatabase = async (req, res, next) => {
 
   const { databaseQuery } = res.locals;
-  const queryParams = [];
+  
 
   console.log('Generated SQL query:', res.locals.databaseQuery);
 
@@ -114,7 +119,7 @@ aiExerciseController.queryDatabase = async (req, res, next) => {
   // EXECUTE QUERY AND HANDLE RESPONSE
   try { 
       // execute the query
-      const result = await db.query(databaseQuery);
+      const result = await db.query(databaseQuery, queryParams);
       if (result.rows.length === 0) {
         return res.status(404).json({ message: 'No exercises found' });
       }
