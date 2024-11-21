@@ -1,6 +1,4 @@
-# CS-SoloProject2 - In Motion Exercise Library and Planner
-
-Testing Main Access
+# Team Tweety: AI-ML-Project - In Motion Exercise Library and Planner
 
 ## ✨ ✨ ✨ PROJECT GOAL & STRETCH FEATURES ✨ ✨ ✨
 
