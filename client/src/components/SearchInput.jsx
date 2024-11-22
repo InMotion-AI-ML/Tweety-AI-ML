@@ -65,12 +65,8 @@ function SearchInput({ setResponseResults }) {
   };
 
   return (
-    <div className='bg-black bg-opacity-80 p-6 rounded-lg shadow-lg max-w-4xl w-full mx-auto'>
-      {/* SEARCH INPUT SECTION */}
-      {/* A black container with opacity, padding, rounded corners, shadow, and centered horizontally */}
-
-      {/* Flex container to align input, selectors, and button horizontally with spacing */}
       <div className='flex items-center space-x-4'>
+      {/* Flex container to align input, selectors, and button horizontally with spacing */}
         {/* SEARCH INPUT */}
         {/* Flex column for vertical alignment with width for even spacing */}
         <div className='flex flex-col w-1/3'>
@@ -154,7 +150,6 @@ function SearchInput({ setResponseResults }) {
           </button>
         </div>
       </div>
-    </div>
   );
 }
 

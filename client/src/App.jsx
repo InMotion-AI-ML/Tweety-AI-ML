@@ -26,6 +26,8 @@ function App() {
       <MainContainer />
     </div>
   );
+  
+  
 }
 
 export default App;
