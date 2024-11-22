@@ -87,8 +87,6 @@ passport.deserializeUser(async (id, done) => {
 
 const oauthRoutes = (app) => {
 
-
-  
   app.use(
     // use express-session for session management
     session({
@@ -106,8 +104,22 @@ const oauthRoutes = (app) => {
     })
   );
 
-  app.use(passport.initialize()); // initialize Passport.js
   app.use(passport.session()); // use Passport's session management
+  
+  app.get('/', (req, res) => {
+    // home route - display user profile if logged in, or login link if not
+    if (req.isAuthenticated()) {
+      // if user is authenticated, show the welcome message and logout link
+      res.send(
+        `<h1>Welcome, ${req.user.name}!</h1><a href='/logout'>Logout</a>`
+      );
+    } else {
+      // if user is not authenticated, show login prompt
+      res.send(
+        '<h1>Welcome! Please <a href="/auth/google">Login with Google</a></h1>'
+      );
+    }
+  });
 
   app.get(
     '/auth/google', // define the route to start the Google login process
@@ -124,21 +136,6 @@ const oauthRoutes = (app) => {
       res.redirect('/');
     }
   );
-
-  app.get('/', (req, res) => {
-    // home route - display user profile if logged in, or login link if not
-    if (req.isAuthenticated()) {
-      // if user is authenticated, show the welcome message and logout link
-      res.send(
-        `<h1>Welcome, ${req.user.name}!</h1><a href='/logout'>Logout</a>`
-      );
-    } else {
-      // if user is not authenticated, show login prompt
-      res.send(
-        '<h1>Welcome! Please <a href="/auth/google">Login with Google</a></h1>'
-      );
-    }
-  });
 
   app.get('/logout', (req, res) => {
     // logout route - end the session and redirect to homepage

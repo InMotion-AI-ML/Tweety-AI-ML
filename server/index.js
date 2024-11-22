@@ -16,13 +16,7 @@ const app = express(); // app, new instance of Express()
 const PORT = process.env.PORT || 8080; // use port from .env or default to 8080
 
 
-// Initialize Passport and restore authentication state from session
-app.use(passport.initialize());
-app.use(passport.session());
 
-// Setup authentication routes
-
-oauthRoutes(app);
 
 
 // get __dirname is an ES Module environment
@@ -52,6 +46,33 @@ if (process.env.NODE_ENV === 'production') { // serve static files from the 'bui
 } else { // in development mode, React app served by React dev server
   console.log('In development mode, React app is served by React development server');
 }
+
+
+// Session configuration - user session stored in cookie for 24 hours
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET || 'your-secret-key',
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       secure: process.env.NODE_ENV === 'production',
+//       maxAge: 24 * 60 * 60 * 1000, // 24 hours
+//       sameSite: 'lax',
+//       httpOnly: true,
+//     },
+//   })
+// );
+
+// // Initialize Passport and restore authentication state from session
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Setup authentication routes
+
+oauthRoutes(app);
+
+
+
 
 app.use((err, req, res, next) => { // global error handling middleware
   console.error('Error occurred:', err); // log the full error object for debugging
