@@ -3,14 +3,17 @@ import React from 'react';
 
 const Logout = () => {
   return (
-    <div className='Logout'>
-      <button
+    <div
+      id='Logout'
+      className='mb-2 pb-2 px-4 py-0.3 cursor-pointer bg-red-600 rounded-lg hover:bg-red-700'
+    >
+      <h1
         onClick={() =>
           (window.location.href = 'http://localhost:8080/api/logout')
         }
       >
         Logout
-      </button>
+      </h1>
     </div>
   );
 };

@@ -65,7 +65,7 @@ function SearchInput({ setResponseResults }) {
   };
 
   return (
-    <div className='flex items-center space-x-4'>
+    <div className='flex items-center space-x-4 py-3'>
       {/* Flex container to align input, selectors, and button horizontally with spacing */}
       {/* SEARCH INPUT */}
       {/* Flex column for vertical alignment with width for even spacing */}
@@ -135,7 +135,7 @@ function SearchInput({ setResponseResults }) {
 
       {/* SEARCH BUTTON */}
       {/* Flex column with invisible label for alignment */}
-      <div className='flex flex-col w-1/4'>
+      <div className='flex flex-col items-end w-1/4'>
         {/* Invisible label to maintain spacing alignment */}
         <label className='block text-sm font-medium mb-2 invisible'>
           Button
@@ -144,7 +144,7 @@ function SearchInput({ setResponseResults }) {
         <button
           id='searchButton'
           onClick={exerciseSearch}
-          className='w-full bg-orange-500 text-black py-2 rounded-lg font-bold hover:bg-orange-600 hover:text-white transition-colors'
+          className='w-[200px] bg-orange-500 text-black py-2 rounded-lg font-bold hover:bg-orange-600 hover:text-white transition-colors'
         >
           Search
         </button>

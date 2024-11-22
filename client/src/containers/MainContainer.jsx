@@ -8,7 +8,10 @@ const MainContainer = () => {
   const [responseResults, setResponseResults] = useState([]); // sets state for responseResults to results of search from backend
 
   return (
-    <div id='mainContainer' className='min-h-screen flex flex-col items-center'>
+    <div
+      id='mainContainer'
+      className='min-h-screen flex flex-col items-center pb-60'
+    >
       {/* DISPLAYS THE SEARCH INPUT METHODS */}
       <SearchContainer setResponseResults={setResponseResults} />
       {/* DISPLAYS THE RETURNED EXERCISE RESULTS AS A UNORDERED LIST */}
