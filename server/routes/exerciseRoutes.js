@@ -23,14 +23,18 @@ router.get(
 // HANDLES THE AI SEARCHING FUNCTIONALITY
 router.post(
   '/aisearch',
+  //   (req, res) =>
+  //     console.log('aisearch: ', { aiResponse: res.locals.aiResponse }),
   aiExerciseController.parseNaturalLanguageQuery,
   aiExerciseController.sqlQueryCreator,
   aiExerciseController.queryDatabase,
   aiExerciseController.openAiResponse,
   (req, res) => {
     // sends AI-generated response to frontend
+
     res.status(200).json({ aiResponse: res.locals.aiResponse });
+    //   res.status(200).json({ Test: 'Hi!' }); // Test
   }
-); 
+);
 
 export default router;
