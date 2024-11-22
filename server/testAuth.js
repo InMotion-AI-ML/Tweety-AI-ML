@@ -92,7 +92,7 @@ app.get('/auth/google/callback', // callback route after Google authentication
   }
 );
 
-app.get('/', (req, res) => { // home route - Display user profile if logged in, or login link if not
+app.get('/', (req, res) => { // home route - display user profile if logged in, or login link if not
   if (req.isAuthenticated()) { // if user is authenticated, show the welcome message and logout link
     res.send(`<h1>Welcome, ${req.user.name}!</h1><a href='/logout'>Logout</a>`);
   } else { // if user is not authenticated, show login prompt
@@ -100,7 +100,7 @@ app.get('/', (req, res) => { // home route - Display user profile if logged in, 
   }
 });
 
-app.get('/logout', (req, res) => { // logout route - End the session and redirect to homepage
+app.get('/logout', (req, res) => { // logout route - end the session and redirect to homepage
   req.logout((err) => {
     if (err) return next(err); // handle any error during logout
     res.redirect('/'); // redirect to homepage after logout
