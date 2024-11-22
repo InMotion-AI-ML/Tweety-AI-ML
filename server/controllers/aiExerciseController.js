@@ -59,20 +59,29 @@ aiExerciseController.sqlQueryCreator = async (req, res, next) => {
       messages: [
         {
           role: 'system',
-          content: `Based on the user query "${userQuery}", generate a SQL query to search the "exercises" table. 
-          - The table has columns: "id" (partial matching), "primaryMuscle", and "category".
-          - Only use one muscle and one category per SQL query.
-          Example SQL:
-          SELECT exercises.* 
-          FROM exercises 
-          WHERE 1=1 
-          AND exercises.id $${queryParams.length + 1} 
-          AND exercises."primaryMuscle" $${queryParams.length + 1} 
+          content: `Based on the user query "${userQuery}", generate one legal SQL query to search the "exercises" table. 
           Muscle groups include: abdominals, abductors, adductors, biceps, calves, chest, forearms, glutes, hamstrings, lats, lower back, middle back, neck, quadriceps, shoulders, traps, triceps.
-          Categories include: cardio, olympic weight lifting, plyometrics, powerlifting, strength, stretching, strongman.
-          Make sure to ONLY return a LEGAL SQL QUERY, do not provide any reasoning or additional text.
-          Do not wrap the query in any symbols or extra text.`,
+          Example userQuery: "I want to work on my quads", Example SQL: SELECT exercises.* FROM exercises WHERE 1 = 1 and exercises.id ILIKE '%squat%' AND 'quadriceps' = ANY (exercises."primaryMuscles")
+          Example userQuery: "I want to jump higher", Example SQL: SELECT exercises.* FROM exercises WHERE 1 = 1 and exercises.id ILIKE '%calf%' AND 'calves' = ANY (exercises."primaryMuscles")
+          Example userQuery: "I want to get better at pitching", Example SQL: SELECT exercises.* FROM exercises WHERE 1 = 1 and exercises.id ILIKE '%internal%' AND 'shoulders' = ANY (exercises."primaryMuscles")
+          This is very important - no matter what, DO NOT wrap the legal query in any symbols or extra text.;`
         },
+        //  AND exercises.category = 'strength'
+
+        // `Based on the user query "${userQuery}", generate a SQL query to search the "exercises" table. 
+        //   - The table has columns: "id" (partial matching), "primaryMuscle", and "category".
+        //   - Only use one muscle and one category per SQL query.
+        //   Example SQL:
+        //   SELECT exercises.* 
+        //   FROM exercises 
+        //   WHERE 1=1 
+        //   AND exercises.id $${queryParams.length + 1} 
+        //   AND exercises."primaryMuscle" $${queryParams.length + 1} 
+        //   Muscle groups include: abdominals, abductors, adductors, biceps, calves, chest, forearms, glutes, hamstrings, lats, lower back, middle back, neck, quadriceps, shoulders, traps, triceps.
+        //   Categories include: cardio, olympic weight lifting, plyometrics, powerlifting, strength, stretching, strongman.
+        //   Make sure to ONLY return a LEGAL SQL QUERY, do not provide any reasoning or additional text.
+        //   This is very important - no matter what, DO NOT wrap the legal query in any symbols or extra text.`,
+
         // - Generate a well-rounded selection of exercises if specific columns are not provided in the query.
       ],
     });
@@ -130,7 +139,7 @@ aiExerciseController.queryDatabase = async (req, res, next) => {
   // EXECUTE QUERY AND HANDLE RESPONSE
   try {
     // execute the query
-    const queryWithLimit = `${databaseQuery} LIMIT 5`; // limit query to 6 results with `LIMIT 6` clause
+    const queryWithLimit = `${databaseQuery} LIMIT 6`; // limit query to 6 results with `LIMIT 6` clause
     const result = await db.query(queryWithLimit);
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'No exercises found' });
@@ -164,19 +173,20 @@ aiExerciseController.openAiResponse = async (req, res, next) => {
   }
 
   const dbResponseData = dbResponse.map((exerciseObj) => {
-    return [exerciseObj.name];
+    return exerciseObj.name;
   });
 
   // Make OpenAi request for response
   const systemContent = `
-          You are a helpful assistant who is aiding the user in developing a list of exercises and workouts.
-          You will receive information from the user regarding what exercises they are looking for, what they are hoping to accomplish, or what activity or sport they want to prepare for. That information is provided here: ${userInput}.
-          From this query, the database returned the following 
-          ${JSON.stringify(dbResponseData, null, 2)}.
-          - Describe how each recommendation relates to the user query.
-          - Provide a summary of how all exercises relate to the query.
-          - Express confidence in the recommendation as a percentage.
+          You are a helpful assistant who is aiding the person in developing a list of exercises and workouts.
+          You will receive information from this person regarding what exercises they are looking for, what they are hoping to accomplish, or what activity or sport they want to prepare for. That information is provided here: ${userInput}.
+          From this search, the database returned the following ${JSON.stringify(dbResponseData, null, 2)}.
+          In the first person:
+          - Choose the 3 most relevant and describe how each recommendation relates to the person's search in at most 2-3 sentences each.
+          - Provide a summary of how all exercises relate to the person's search in at most 5 sentences.
   `;
+  // - Express confidence in the recommendation as a percentage.
+
   //   You are a helpful assistant who is aiding the user in developing a list of exercises and workouts.
   //   You will receive information from the user regarding what exercises they are looking for, what they are hoping to accomplish, or what activity or sport they want to prepare for.
   //   You can find this information here: ${userInput}.
@@ -207,9 +217,11 @@ aiExerciseController.openAiResponse = async (req, res, next) => {
       return next(error);
     }
 
+    console.time('AI Query Time'); // captures execution times for AI query generation and database querying
     // Store openAi message in res.locals
     res.locals.aiResponse = openAiResponse.choices[0].message.content;
-    console.log('openAiResponse END');
+    console.timeEnd('AI Query Time');
+
     console.log('response:', res.locals.aiResponse);
     return next();
   } catch (err) {
