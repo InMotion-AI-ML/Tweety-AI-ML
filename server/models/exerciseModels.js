@@ -5,7 +5,8 @@ dotenv.config(); // ensure the environment variables are loaded
 
 const PG_URI = process.env.PG_URI;
 
-const pool = new Pool({ // new Pool instance
+const pool = new Pool({
+  // new Pool instance
   connectionString: PG_URI, // database connection string from environment variables
 });
 
