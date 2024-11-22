@@ -1,0 +1,27 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google OAuth Login</title>
+</head>
+<body>
+  <h1>Welcome to the Google Login Demo</h1>
+  <p>If you're not logged in, please click below to login with Google:</p>
+  <a href="/auth/google"><button>Login with Google</button></a>
+  
+  <p id="user-info"></p>
+
+  <a href="/logout" id="logout-button" style="display:none;"><button>Logout</button></a>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (document.body.innerHTML.includes('Welcome')) {
+        document.getElementById('logout-button').style.display = 'inline';
+      } else {
+        document.getElementById('logout-button').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+

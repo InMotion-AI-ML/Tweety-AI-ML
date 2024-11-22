@@ -5,11 +5,11 @@ const ResultsContainer = ({ responseResults }) => {
   return (
     <div
       id='exerciseContainer'
-      className='flex flex-row mt-8 max-w-7xl w-full mx-auto space-x-6'
+      className='flex flex-row mt-8 px-20 max-w-7xl w-full max-h-full mx-auto space-x-6'
     >
       {/* LEFT COLUMN: Exercise list */}
       {/* Fixed width for the exercise list with scrollable content */}
-      <div className='exerciseList w-[400px] space-y-4 overflow-y-scroll max-h-[400px] bg-black bg-opacity-80 p-4 rounded-lg shadow-md'>
+      <div className='exerciseList w-1/3 space-y-4 overflow-y-scroll max-h-full h-[600px] bg-black bg-opacity-80 p-4 rounded-lg shadow-md'>
         {responseResults.length > 0 ? (
           <ul className='space-y-4'>
             {responseResults.map((exercise) => (
@@ -40,7 +40,7 @@ const ResultsContainer = ({ responseResults }) => {
 
       {/* RIGHT COLUMN: Exercise details */}
       {/* Fixed height and overflow handling to ensure the box doesn't resize */}
-      <div className='exerciseDetails bg-black bg-opacity-80 p-6 rounded-lg shadow-md w-full max-h-[400px] overflow-y-auto'>
+      <div className='exerciseDetails bg-black bg-opacity-80 p-6 rounded-lg shadow-md w-full max-h-full overflow-y-auto'>
         {expandedExerciseId ? (
           responseResults.map((exercise) =>
             exercise.id === expandedExerciseId ? (

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const SearchAI = ({ setResponseResults }) => {
+const SearchAI = ({ responseResults, setResponseResults }) => {
   const [searchAI, setSearchAI] = useState(''); // state for saving user's AI query
+  // const [responseResults, setResponseResults] = useState(null);
 
   const handleAISubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -58,7 +59,7 @@ const SearchAI = ({ setResponseResults }) => {
   // };
 
   return (
-    <div className='flex items-center space-x-4'>
+    <div className='flex items-center space-x-4 py-3'>
       {/* SEARCH INPUT SECTION */}
       {/* SEARCH INPUT */}
       <div className='flex flex-col w-3/4'>
@@ -73,11 +74,11 @@ const SearchAI = ({ setResponseResults }) => {
           value={searchAI}
           placeholder='What is your exercise goal?'
           onChange={(e) => setSearchAI(e.target.value)}
-          className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
+          className='w-fill px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
         />
       </div>
       {/* SEARCH BUTTON */}
-      <div className='flex flex-col w-1/4'>
+      <div className='flex flex-col items-end w-1/4'>
         {/* Invisible label to maintain spacing alignment */}
         <label className='block text-sm font-medium mb-2 invisible'>
           Button
@@ -85,10 +86,16 @@ const SearchAI = ({ setResponseResults }) => {
         {/* Button with full width, orange background, hover effects, and padding */}
         <button
           onClick={handleAISubmit}
-          className='w-full bg-orange-500 text-black py-2 rounded-lg font-bold hover:bg-orange-600 hover:text-white transition-colors'
+          className='w-[200px] bg-orange-500 text-black py-2 rounded-lg font-bold hover:bg-orange-600 hover:text-white transition-colors'
         >
           Search
         </button>
+        {responseResults && (
+          <div>
+            <h3>Chad-PT Response:</h3>
+            <p>{responseResults}</p>
+          </div>
+        )}
       </div>
     </div>
   );
