@@ -4,9 +4,11 @@ import dotenv from 'dotenv'; // for loading environment variables
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import exerciseRoutes from './routes/exerciseRoutes.js'; // import exercise routes
-const passport = require('passport');
-const session = require('express-session');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+import passport from 'passport';
+import session from 'express-session';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { oauthRoutes } from './auth.js';
+
 
 dotenv.config(); // ensure the environment variables are loaded
 
@@ -17,6 +19,10 @@ const PORT = process.env.PORT || 8080; // use port from .env or default to 8080
 // Initialize Passport and restore authentication state from session
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Setup authentication routes
+
+oauthRoutes(app);
 
 
 // get __dirname is an ES Module environment

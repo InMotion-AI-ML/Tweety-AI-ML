@@ -1,128 +1,156 @@
 import dotenv from 'dotenv';
+import express from 'express';
 import passport from 'passport';
 import session from 'express-session';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20'; // Passport Google OAuth Strategy
 import db from './models/exerciseModels.js';
 
 dotenv.config();
 
-
-
-// Connect to Google API
-const googleAPI = new GoogleStrategy({
-  clientId: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  redirectUri: 'http://localhost:3000',
-  scope: ['profile', 'email'],
-});
-
-
-
-// user table is called "exerciseUsers"
-
-
-
-
-// server.js
-const express = require('express');
-const passport = require('passport');
-const session = require('express-session');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const { createClient } = require('@supabase/supabase-js');
-
-require('dotenv').config();
-
 const app = express();
 
-// Logs people in using google oauth
-// FIND/CREATE USERS HERE
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'http://localhost:3000/auth/google/callback',
-  },
-  function (accessToken, refreshToken, profile, done) {
-    // You can save the user's profile to the session here
-    return done(null, profile);
-  }
-));
-
-
-// Serialize user into session (store user profile info)
-// Makes it so that a user stays logged in even when navigating to different pages/refreshing the page+
-// Generates a unique session ID and stores it as a cookie
-passport.serializeUser(function (user, done) {
-  done(null, user);
-});
-
-// Deserialize user from session (retrieve user profile)
-// So that application can find the user in the databvase
-// When a request comes in from the user after they've logged in, 
-//Passport needs to look up the stored user ID (from the session) 
-//and fetch the user's complete profile data from the database
-passport.deserializeUser(function (user, done) {
-  done(null, user);
-});
-
-// Use express-session to manage sessions
-// looks up the session ID in the cookie
-// retrieves session data
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET, // Secret to sign the session ID cookie
-    resave: false, // Don't save session if it's unmodified
-    saveUninitialized: true, // Create a session even if the session is new
-    cookie: {
-      httpOnly: true, // Cookie can't be accessed by JavaScript
-      secure: process.env.NODE_ENV === 'production', // Only send cookie over HTTPS in production
-      sameSite: 'lax', // Restrict cookie sending in cross-site requests
-      maxAge: 3600000, // 1 hour
-      path: '/', // The cookie is available on the entire site
+passport.use(
+  new GoogleStrategy(
+    {
+      // Passport to use Google OAuth strategy for authenticating users
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: 'http://localhost:3000/auth/google/callback', // URL that Google redirects user to after successful sign in; Passport uses the URL to process the callback from Google
+      scope: ['profile', 'email'], // request profile and email from Google
     },
-  })
+    async (accessToken, refreshToken, profile, done) => {
+      // callback function that Passport calls once Google responds with several parameters but we only want profile for email and display name
+      const { email, displayName } = profile; // get email and display name from the Google profile
+
+      try {
+        // Check if the user already exists in the 'exerciseUsers' table using their email
+        const query = 'SELECT * FROM exerciseUsers WHERE email = $1 LIMIT 1'; // declare the parameterized query
+        const { rows: existingUser, error: checkError } = await db.query(
+          query,
+          [email]
+        ); // run the SQL query passing in the email to query
+
+        if (checkError) {
+          // if an error occurs while checking user existence, handle it
+          return done(checkError);
+        }
+
+        if (existingUser.length > 0) {
+          // if the user exists, return the user data
+          return done(null, existingUser[0]); // once passed to done, the authentication process is complete
+        }
+
+        const insertQuery = `INSERT INTO exerciseUsers (name, email, history) VALUES ($1, $2, $3) RETURNING *`; // if the user doesn't exist, create a new user in the database, RETURNING returns the newly creater user allowing immediate access to their information
+        const { rows: newUser, error: createError } = await db.query(
+          insertQuery,
+          [
+            displayName,
+            email,
+            [], // save name, email, and initialize empty history
+          ]
+        );
+
+        if (createError) {
+          // if error during user creation, handle it
+          return done(createError);
+        }
+
+        return done(null, newUser[0]); // if the user was successfully created, return the new user data
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
 );
 
-// Initialize Passport.js
-app.use(passport.initialize());
-app.use(passport.session());
+passport.serializeUser((user, done) => {
+  // serialize user into session, this stores part of the user data in the session, id in this case
+  done(null, user.id); // store user ID to refer to the session
+});
 
-
-// Define Routes
-
-// Redirect to Google for authentication
-app.get('/auth/google',
-  passport.authenticate('google', {
-    scope: ['https://www.googleapis.com/auth/plus.login', 'https://www.googleapis.com/auth/userinfo.profile']
-  })
-);
-
-// Handle the Google callback and authenticate the user
-app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
-  function (req, res) {
-    // Successful authentication, redirect home or to a desired page
-    res.redirect('/');
-  }
-);
-
-// Home route to show user profile or logged-in status
-app.get('/', (req, res) => {
-  if (req.isAuthenticated()) {
-    res.send(`<h1>Hello, ${req.user.displayName}!</h1><a href='/logout'>Logout</a>`);
-  } else {
-    res.send('<h1>Welcome, please <a href="/auth/google">Login with Google</a></h1>');
+passport.deserializeUser(async (id, done) => {
+  // deserialize user from session, this retrieves the full user data from the database based on the id stored in the session, Passport will use this function to retrieve and attach the user object to the req.user property during subsequent user requests
+  try {
+    const { rows: user, error } = await db.query(
+      'SELECT * FROM exerciseUsers WHERE id = $1',
+      [id]
+    );
+    if (error) {
+      return done(error); // handle error if user not found or database issue
+    }
+    done(null, user[0]); // return the full user data to the session
+  } catch (error) {
+    done(error); // Catch unexpected errors
   }
 });
 
-// Logout route
-app.get('/logout', (req, res) => {
-  req.logout((err) => {
-    if (err) return next(err);
-    res.redirect('/');
+
+const oauthRoutes = (app) => {
+
+
+  
+  app.use(
+    // use express-session for session management
+    session({
+      // configure the session middleware to store the session ID in a cookie on the user's browser
+      secret: process.env.SESSION_SECRET, // secret key to sign the session ID cookie
+      resave: false, // don't save session if it is unmodified
+      saveUninitialized: true, // save empty session if nothing is in it
+      cookie: {
+        // to configure the session cookie
+        httpOnly: true, // ensure cookie can't be accessed via JavaScript
+        secure: process.env.NODE_ENV === 'production', // use HTTPS for cookie in production
+        sameSite: 'lax', // restrict sending cookies in cross-origin requests
+        maxAge: 3600000, // set session expiration to 1 hour
+      },
+    })
+  );
+
+  app.use(passport.initialize()); // initialize Passport.js
+  app.use(passport.session()); // use Passport's session management
+
+  app.get(
+    '/auth/google', // define the route to start the Google login process
+    passport.authenticate('google', {
+      scope: ['profile', 'email'], // request access to profile and email
+    })
+  );
+
+  app.get(
+    '/auth/google/callback', // callback route after Google authentication
+    passport.authenticate('google', { failureRedirect: '/' }), // redirect to homepage on failure
+    function (req, res) {
+      // on success, redirect to the home page
+      res.redirect('/');
+    }
+  );
+
+  app.get('/', (req, res) => {
+    // home route - display user profile if logged in, or login link if not
+    if (req.isAuthenticated()) {
+      // if user is authenticated, show the welcome message and logout link
+      res.send(
+        `<h1>Welcome, ${req.user.name}!</h1><a href='/logout'>Logout</a>`
+      );
+    } else {
+      // if user is not authenticated, show login prompt
+      res.send(
+        '<h1>Welcome! Please <a href="/auth/google">Login with Google</a></h1>'
+      );
+    }
   });
-});
 
-// Start the server
-app.listen(3000, () => {
-  console.log('Server started on http://localhost:3000');
-});
+  app.get('/logout', (req, res) => {
+    // logout route - end the session and redirect to homepage
+    req.logout((err) => {
+      if (err) return next(err); // handle any error during logout
+      res.redirect('/'); // redirect to homepage after logout
+    });
+  });
+
+  // app.listen(3000, () => {
+  //   console.log('Server started on http://localhost:3000');
+  // });
+};
+
+export { oauthRoutes };
