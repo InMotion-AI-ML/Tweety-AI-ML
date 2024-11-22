@@ -65,91 +65,91 @@ function SearchInput({ setResponseResults }) {
   };
 
   return (
-      <div className='flex items-center space-x-4'>
+    <div className='flex items-center space-x-4 py-3'>
       {/* Flex container to align input, selectors, and button horizontally with spacing */}
-        {/* SEARCH INPUT */}
-        {/* Flex column for vertical alignment with width for even spacing */}
-        <div className='flex flex-col w-1/3'>
-          {/* Label for input with bottom margin */}
-          <label htmlFor='searchId' className='block text-sm font-medium mb-2'>
-            Search
-          </label>
-          {/* Input with full width, padding, border, focus effects, and black text */}
-          <input
-            type='text'
-            id='searchId'
-            placeholder='Search exercises'
-            ref={searchInputRef}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') exerciseSearch();
-            }}
-            className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
-          />
-        </div>
-
-        {/* MUSCLE SELECTOR */}
-        {/* Flex column for vertical alignment with reduced width */}
-        <div className='flex flex-col w-1/4'>
-          {/* Label for muscle selector */}
-          <label htmlFor='muscle' className='block text-sm font-medium mb-2'>
-            Muscle
-          </label>
-          {/* Dropdown with full width, padding, border, and focus effects */}
-          <select
-            id='muscle'
-            value={muscle}
-            onChange={(e) => setMuscle(e.target.value)}
-            className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
-          >
-            <option value=''>Select Muscle</option>
-            {muscleOptions.map((m, index) => (
-              <option key={index} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* CATEGORY SELECTOR */}
-        {/* Flex column with width matching the muscle selector */}
-        <div className='flex flex-col w-1/4'>
-          {/* Label for category selector */}
-          <label htmlFor='category' className='block text-sm font-medium mb-2'>
-            Category
-          </label>
-          {/* Dropdown with similar styling as muscle selector */}
-          <select
-            id='category'
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
-          >
-            <option value=''>Select Category</option>
-            {categoryOptions.map((c, index) => (
-              <option key={index} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* SEARCH BUTTON */}
-        {/* Flex column with invisible label for alignment */}
-        <div className='flex flex-col w-1/4'>
-          {/* Invisible label to maintain spacing alignment */}
-          <label className='block text-sm font-medium mb-2 invisible'>
-            Button
-          </label>
-          {/* Button with full width, orange background, hover effects, and padding */}
-          <button
-            id='searchButton'
-            onClick={exerciseSearch}
-            className='w-full bg-orange-500 text-black py-2 rounded-lg font-bold hover:bg-orange-600 hover:text-white transition-colors'
-          >
-            Search
-          </button>
-        </div>
+      {/* SEARCH INPUT */}
+      {/* Flex column for vertical alignment with width for even spacing */}
+      <div className='flex flex-col w-1/3'>
+        {/* Label for input with bottom margin */}
+        <label htmlFor='searchId' className='block text-sm font-medium mb-2'>
+          Search
+        </label>
+        {/* Input with full width, padding, border, focus effects, and black text */}
+        <input
+          type='text'
+          id='searchId'
+          placeholder='Search exercises'
+          ref={searchInputRef}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') exerciseSearch();
+          }}
+          className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
+        />
       </div>
+
+      {/* MUSCLE SELECTOR */}
+      {/* Flex column for vertical alignment with reduced width */}
+      <div className='flex flex-col w-1/4'>
+        {/* Label for muscle selector */}
+        <label htmlFor='muscle' className='block text-sm font-medium mb-2'>
+          Muscle
+        </label>
+        {/* Dropdown with full width, padding, border, and focus effects */}
+        <select
+          id='muscle'
+          value={muscle}
+          onChange={(e) => setMuscle(e.target.value)}
+          className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
+        >
+          <option value=''>Select Muscle</option>
+          {muscleOptions.map((m, index) => (
+            <option key={index} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* CATEGORY SELECTOR */}
+      {/* Flex column with width matching the muscle selector */}
+      <div className='flex flex-col w-1/4'>
+        {/* Label for category selector */}
+        <label htmlFor='category' className='block text-sm font-medium mb-2'>
+          Category
+        </label>
+        {/* Dropdown with similar styling as muscle selector */}
+        <select
+          id='category'
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-black'
+        >
+          <option value=''>Select Category</option>
+          {categoryOptions.map((c, index) => (
+            <option key={index} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* SEARCH BUTTON */}
+      {/* Flex column with invisible label for alignment */}
+      <div className='flex flex-col items-end w-1/4'>
+        {/* Invisible label to maintain spacing alignment */}
+        <label className='block text-sm font-medium mb-2 invisible'>
+          Button
+        </label>
+        {/* Button with full width, orange background, hover effects, and padding */}
+        <button
+          id='searchButton'
+          onClick={exerciseSearch}
+          className='w-[200px] bg-orange-500 text-black py-2 rounded-lg font-bold hover:bg-orange-600 hover:text-white transition-colors'
+        >
+          Search
+        </button>
+      </div>
+    </div>
   );
 }
 
